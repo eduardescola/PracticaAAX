@@ -15,7 +15,7 @@ public class ClienteUDP {
 	      this.IP = IP;
 	      this.puerto = puerto;
 	  }
-	 public String run(Scanner inputTeclado) {
+	 public String run(Scanner inputTeclado) { //Input teclado no necessario porque solo recivo?
 	        DatagramSocket socket = null;
 	        try {
 	            socket = new DatagramSocket();
@@ -24,6 +24,7 @@ public class ClienteUDP {
 	            System.exit(1);
 	        }
 	        // Enviar datos
+	        /*
 	        System.out.println("Pon que quieres hacer a b c o d");
 	        String zona = inputTeclado.nextLine();
 	        inputTeclado.close();
@@ -43,10 +44,10 @@ public class ClienteUDP {
 	            System.err.println("Error when sending");
 	            System.exit(1);
 	        }
-	        
+	        */
 	        //Recibir datos
 	        byte[] bufResponse=new byte [256];
-	        packet = new DatagramPacket(bufResponse, bufResponse.length);
+	        DatagramPacket packet = new DatagramPacket(bufResponse, bufResponse.length);
 	        try {
 	            socket.receive(packet);
 	        } catch (IOException e) {
