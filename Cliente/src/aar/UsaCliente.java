@@ -20,7 +20,7 @@ public class UsaCliente {
 		switch (opcio) {
 		case 1:
 			ClienteUDP objetoClienteUDP= new ClienteUDP("localhost",3000);
-	        puertoMonitor = objetoClienteUDP.run(inputTeclado);
+	        puertoMonitor = objetoClienteUDP.run();
 		    break;
 		  case 2:
 			//ClienteTCP objetoClienteTCP= new ClienteTCP("localhost",Integer.parseInt(puertoDestino));
