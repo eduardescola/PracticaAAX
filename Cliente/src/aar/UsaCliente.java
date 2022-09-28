@@ -5,8 +5,7 @@ import java.util.Scanner;
 public class UsaCliente {
 
 	public static void main(String[] args) {
-		Scanner inputTeclado = new Scanner(System.in);
-		String puertoMonitor;
+		Scanner teclado = new Scanner(System.in);
 		int opcio;
 		
 		Scanner teclat = new Scanner(System.in);
@@ -19,8 +18,8 @@ public class UsaCliente {
 	        teclat.close();
 		switch (opcio) {
 		case 1:
-			ClienteUDP objetoClienteUDP= new ClienteUDP("localhost",3000);
-	        puertoMonitor = objetoClienteUDP.run();
+			ClienteUDP objetoClienteUDP= new ClienteUDP("localhost", 3000);
+			objetoClienteUDP.run(teclado);
 		    break;
 		  case 2:
 			//ClienteTCP objetoClienteTCP= new ClienteTCP("localhost",Integer.parseInt(puertoDestino));

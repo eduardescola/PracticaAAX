@@ -8,59 +8,96 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class ClienteUDP {
-	 private String IP = "";
-	 private int puerto = 0;
-	    
-	 public ClienteUDP(String IP, int puerto) {
-	      this.IP = IP;
-	      this.puerto = puerto;
-	  }
-	 public String run() { 
-	        DatagramSocket socket = null;
-	        try {
-	            socket = new DatagramSocket();
-	        } catch (IOException e) {
-	            System.err.println("Could not listen on port: "+puerto);
-	            System.exit(1);
-	        }
-	        // Enviar datos
-	        
-	        
-	        String peticion = " ";
-	        
-	        byte[] buf = new byte[256];
-	        buf = peticion.getBytes();
-	        InetAddress address = null;
-	        try {
-	            address = InetAddress.getByName(IP);
-	        } catch (UnknownHostException ex) {
-	            System.err.println("Unknown Host Exception");
-	            System.exit(1);
-	        }
-	        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, puerto);  
-	        try {
-	            socket.send(packet);
-	        } catch (IOException e) {
-	            System.err.println("Error when sending");
-	            System.exit(1);
-	        }
-	        
-	        //Recibir datos
-	        //poner un bucle para recivir todo el rato
-	        byte[] bufResponse=new byte [256];
-	        DatagramPacket responsePacket = new DatagramPacket(bufResponse, bufResponse.length);
-	        try {
-	            socket.receive(responsePacket);
-	        } catch (IOException e) {
-	            System.err.println("Error when receiving");
-	            System.exit(1);
-	        }
-	        
-	        //Printar datos recibidos
-	        String received = new String(responsePacket.getData(), 0, responsePacket.getLength());
-	        System.out.println("Datos Edge server: " + received);
+	private String IP = "";
+	private int puerto = 0;
 
-	        socket.close();
-	        return (received);
-	 }
+	public ClienteUDP(String IP, int puerto) {
+		this.IP = IP;
+		this.puerto = puerto;
+	}
+
+	public void run(Scanner teclado) {
+		
+		DatagramSocket socket = crearSocket(puerto);
+
+		enviarPeticion(puerto, socket);
+		
+		// Recivir datos
+		int i=1;
+        //teclado.next();
+		while(!teclado.equals(" ") && true) {
+			byte[] buf=crearBuffer();
+			DatagramPacket packetMonitor=crearPacket(buf);
+			recivirDatos(socket, packetMonitor);
+			
+			String received = new String(packetMonitor.getData(), 0, packetMonitor.getLength());
+			String response=i+". Dato Sensor: " + received;
+			System.out.println(response);
+			i++;
+			//teclado.next();
+			if(i==11)
+				break;
+		}
+		socket.close();
+	}
+	
+	private DatagramSocket crearSocket(int puerto) {
+		DatagramSocket socket = null;
+
+		try {
+			socket = new DatagramSocket();
+		} catch (IOException e) {
+			System.err.println("Could not listen on port: " + puerto);
+			System.exit(1);
+		}
+		return socket;
+	}
+	
+	private DatagramPacket crearPacket(byte[] buf) {
+		DatagramPacket packet = new DatagramPacket(buf, buf.length);
+		return packet;
+	}
+	
+	private byte[] crearBuffer() {
+		byte[] buf = new byte[256];
+		return buf;
+	}
+	
+	private void recivirDatos(DatagramSocket socket, DatagramPacket packet) {
+		try {
+			socket.receive(packet);
+		} catch (IOException e) {
+			System.err.println("Error when receiving");
+			System.exit(1);
+		}
+	}
+	
+	private void enviarPeticion(int puerto, DatagramSocket socket) {
+
+		// declarar peticion
+		DatagramPacket packet;
+		InetAddress address = null;
+		byte[] buf = new byte[256];
+		String peticion = " ";
+
+		buf = peticion.getBytes();
+
+		// pasar ip del Cliente
+		try {
+			address = InetAddress.getByName(IP);
+		} catch (UnknownHostException ex) {
+			System.err.println("Unknown Host Exception");
+			System.exit(1);
+		}
+
+		// enviar peticion
+		packet = new DatagramPacket(buf, buf.length, address, puerto);
+	
+		try {
+			socket.send(packet);
+		} catch (IOException e) {
+			System.err.println("Error when sending");
+			System.exit(1);
+		}
+	}
 }

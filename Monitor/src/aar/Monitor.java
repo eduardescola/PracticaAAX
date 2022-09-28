@@ -9,58 +9,48 @@ import java.net.UnknownHostException;
 public class Monitor {
 	private int puertoMonitor = 0;
 	private String IP = "";
-	private int puertoDestino = 0;
+	private int puertoDestino1 = 0;
 	private int puertoDestino2 = 0;
 	private int puertoDestino3 = 0;
 
 	public Monitor(int puerto, String IP, int puertoDestino, int puertoDestino2, int puertoDestino3) {
 		this.puertoMonitor = puerto;
-		this.puertoDestino = puertoDestino;
+		this.puertoDestino1 = puertoDestino;
 		this.puertoDestino2 = puertoDestino2;
 		this.puertoDestino3 = puertoDestino3;
 	}
 
 	public void run() {
-		
+		//recive peticion cliente
 		DatagramSocket socket = crearSocket(puertoMonitor);
 		
 		byte[] buf = crearBuffer();
 		
 		DatagramPacket packet = crearPacket(buf);
 		
-		//recivir datos
-		try {
-			socket.receive(packet);
-		} catch (IOException e) {
-			System.err.println("Error when receiving");
-			System.exit(1);
-		}
-		
-		
-		
-		
-		
-		//conectar a sensores
-		
-		String received = new String(packet.getData(), 0, packet.getLength());
-
-		buf = received.getBytes();
-
-		// envio datos a cliete
+		recivirDatos(socket, packet);
 		InetAddress addressOrigen = packet.getAddress();
-		
-		///////////enviarDatos(puertoDestino, socket, " ", addressOrigen, puertoMonitor);
-		
 		int puertoOrigen = packet.getPort();
-		packet = new DatagramPacket(buf, buf.length, addressOrigen, puertoOrigen);
-
-		try {
-			socket.send(packet);
-		} catch (IOException e) {
-			System.err.println("Error when sending");
-			System.exit(1);
+		
+		//envia peticion a sensores
+		enviarDatos(puertoDestino1, socket, " ", null, 0);
+		enviarDatos(puertoDestino2, socket, " ", null, 0);
+		enviarDatos(puertoDestino3, socket, " ", null, 0);
+		
+		//tratar packet sensores
+		byte[] bufSensor = crearBuffer();
+		
+		DatagramPacket packetSensor = crearPacket(bufSensor);
+		
+		while (!socket.isClosed()) {
+			recivirDatos(socket, packetSensor);
+			
+			String packetTratado=tratarDatos(packetSensor, bufSensor);
+			
+			enviarDatos(0, socket, packetTratado, addressOrigen, puertoOrigen);
 		}
-		System.out.println("Peticion servida");
+		
+		System.out.println("Envio finalizado!");
 		socket.close();
 	}
 	
@@ -84,6 +74,15 @@ public class Monitor {
 	private byte[] crearBuffer() {
 		byte[] buf = new byte[256];
 		return buf;
+	}
+	
+	private void recivirDatos(DatagramSocket socket, DatagramPacket packet) {
+		try {
+			socket.receive(packet);
+		} catch (IOException e) {
+			System.err.println("Error when receiving");
+			System.exit(1);
+		}
 	}
 	
 	private void enviarDatos(int puerto, DatagramSocket socket, String datos, InetAddress addressOrigen, int puertoOrigen) {
@@ -115,7 +114,25 @@ public class Monitor {
 			System.err.println("Error when sending");
 			System.exit(1);
 		}
-
+	}
+	
+	private String tratarDatos(DatagramPacket packet, byte[] buf) {
+		String received = new String(packet.getData(), 0, packet.getLength());
+		String[] partes = received.split(" ");
+		String valor = partes[0];
+		String unidad = partes[1];
+		
+		int valorInt = Integer.parseInt(valor);
+		if (unidad.equals("F"))
+			received=farenheitToCelsius(valorInt, unidad);
+		return received;
 	}
 
+	private String farenheitToCelsius(int valor, String unidad) {
+		valor=(valor-32)*5/9; 
+		unidad="C";
+		String convertido=valor+" "+unidad;
+		return convertido;
+	}
+	
 }
