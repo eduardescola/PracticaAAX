@@ -16,7 +16,7 @@ public class ClienteUDP {
 		this.puerto = puerto;
 	}
 
-	public void run(Scanner teclado) {
+	public void run() {
 		
 		DatagramSocket socket = crearSocket(puerto);
 
@@ -24,8 +24,7 @@ public class ClienteUDP {
 		
 		// Recivir datos
 		int i=1;
-        //teclado.next();
-		while(!teclado.equals(" ") && true) {
+		while(true) {
 			byte[] buf=crearBuffer();
 			DatagramPacket packetMonitor=crearPacket(buf);
 			recivirDatos(socket, packetMonitor);
@@ -34,7 +33,6 @@ public class ClienteUDP {
 			String response=i+". Dato Sensor: " + received;
 			System.out.println(response);
 			i++;
-			//teclado.next();
 			if(i==11)
 				break;
 		}

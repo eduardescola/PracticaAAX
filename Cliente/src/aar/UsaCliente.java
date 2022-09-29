@@ -19,18 +19,18 @@ public class UsaCliente {
 		switch (opcio) {
 		case 1:
 			ClienteUDP objetoClienteUDP= new ClienteUDP("localhost", 3000);
-			objetoClienteUDP.run(teclado);
+			objetoClienteUDP.run();
 		    break;
 		  case 2:
-			//ClienteTCP objetoClienteTCP= new ClienteTCP("localhost",Integer.parseInt(puertoDestino));
-			//objetoClienteTCP.run(inputTeclado);
-			//inputTeclado.close();
+			ClienteTCP objetoClienteTCP= new ClienteTCP("localhost", 7000);
+			objetoClienteTCP.run(teclado);
+			teclado.close();
 		    break;
 		  case 3:
 			//Falta Contrasenya
-			//ClienteTCP objetoClienteTCP= new ClienteTCP("localhost",Integer.parseInt(puertoDestino));
-			//objetoClienteTCP.run(inputTeclado);
-			//inputTeclado.close();
+			ClienteTCP objetoClienteTCP2= new ClienteTCP("localhost", 7000);
+			objetoClienteTCP2.run(teclado);
+			teclado.close();
 		    break;
 		  default:
 	            System.out.println("Tria entre 1 i 3");
