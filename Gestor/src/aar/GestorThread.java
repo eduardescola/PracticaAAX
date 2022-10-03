@@ -21,7 +21,8 @@ public class GestorThread extends Thread {
 	public void run() {
 		PrintWriter out = null;
 		BufferedReader in = null;
-
+		String clientDescarga = "0";
+		
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -32,13 +33,15 @@ public class GestorThread extends Thread {
 
 		String inputLine;
 
-		try {
-			String ruta = null;
-			while ((inputLine = in.readLine()) != null) {
+		try {			
+			if ((inputLine = in.readLine()).equals(clientDescarga)) {
+				String ruta = null;
 				ruta = getFile(inputLine);
-				break;
+				sendFile(ruta, socket);
+			}else {
+				
 			}
-			sendFile(ruta, socket);
+			
 
 		} catch (IOException e) {
 			System.err.println("Read failed.");

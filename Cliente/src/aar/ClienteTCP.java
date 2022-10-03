@@ -22,14 +22,13 @@ public class ClienteTCP {
         this.puerto = puerto;
     }
     
-    public void run(Scanner inputTeclado) {
+    public void runDownload(Scanner teclat) {
         Socket socket = null;
         PrintWriter out = null;
         BufferedReader in = null;
 
-        System.out.println(puerto);
         System.out.println("Que fichero quieres descargar?");
-        String fichero = inputTeclado.nextLine();
+        String fichero = teclat.nextLine();
         
         try {
             socket = new Socket(IP, puerto);
@@ -47,6 +46,7 @@ public class ClienteTCP {
         String fromServer;
         String fromUser;
         
+        out.println("0");
         out.println(fichero);
         
         try {
@@ -99,4 +99,29 @@ public class ClienteTCP {
                 }
             }
         }
+    public void runUpload(Scanner teclat) {
+    	Socket socket = null;
+        PrintWriter out = null;
+        BufferedReader in = null;
+
+        System.out.println("Introdueix la contrasenya: ");
+        String contrasenya = teclat.nextLine();
+        
+        try {
+            socket = new Socket(IP, puerto);
+            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        } catch (UnknownHostException e) {
+            System.err.println("Don't know about host: "+IP);
+            System.exit(1);
+        } catch (IOException e) {
+            System.err.println("Couldn't get I/O for the connection to: "+IP);
+            System.exit(1);
+        }
+        
+        out.println("1");
+        out.println(contrasenya);
+        
+        
+    }
 }

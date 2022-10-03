@@ -15,7 +15,7 @@ private int puerto = 0;
         try {
             serverSocket = new ServerSocket(puerto);
         } catch (IOException e) {
-            System.err.println("Could not listen on port: 5555.");
+            System.err.println("Could not listen on port: 7000.");
             System.exit(1);
         }
         
