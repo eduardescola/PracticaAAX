@@ -5,7 +5,9 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -22,7 +24,8 @@ public class GestorThread extends Thread {
 		PrintWriter out = null;
 		BufferedReader in = null;
 		String clientDescarga = "0";
-		
+
+		// crear in/outs
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -32,16 +35,33 @@ public class GestorThread extends Thread {
 		}
 
 		String inputLine;
+		String contrasenya = "elpepe";
 
-		try {			
+		// validar contraseña en el else
+		try {
 			if ((inputLine = in.readLine()).equals(clientDescarga)) {
-				String ruta = null;
-				ruta = getFile(inputLine);
+				String ruta = getFile(inputLine);
 				sendFile(ruta, socket);
-			}else {
-				
+			} else {
+				inputLine = in.readLine();
+				while (!inputLine.equals(contrasenya)) {
+					out.println("0");
+					inputLine = in.readLine();
+				}
+				out.println("1");
+				String fromServer;
+		        String fromUser;
+		       
+		        try {
+		            while ((fromServer = in.readLine()) != null) {
+		                receiveFile(System.getProperty("user.dir")+"/reports", socket);
+		        	}
+		        } catch (IOException e) {
+		            System.err.println(e.getCause());
+		            System.exit(1);
+		        }  
+
 			}
-			
 
 		} catch (IOException e) {
 			System.err.println("Read failed.");
@@ -59,7 +79,7 @@ public class GestorThread extends Thread {
 	}
 
 	private String getFile(String fileName) {
-		String PATH = "C:\\Users\\AORUS\\eclipse-workspace\\Javasockets\\src\\Edge\\";
+		String PATH = System.getProperty("user.dir") + "/reports";
 		File raiz = new File(PATH);
 		String[] fileList = raiz.list();
 		for (String str : fileList) {
@@ -77,15 +97,40 @@ public class GestorThread extends Thread {
 		BufferedOutputStream bos;
 
 		File input = new File(inputFilePath);
-		
+
 		fis = new FileInputStream(input);
 		bis = new BufferedInputStream(fis);
 		os = socket.getOutputStream();
 		bos = new BufferedOutputStream(os);
-		
+
 		byte[] buffer = new byte[1024];
 		int data;
-		
+
+		while (true) {
+			data = bis.read(buffer);
+			if (data != -1) {
+				bos.write(buffer, 0, 1024);
+			} else {
+				bis.close();
+				bos.close();
+				break;
+			}
+		}
+	}
+
+	public static void receiveFile(String outputFilePath, Socket socket) throws IOException {
+		InputStream is;
+		BufferedInputStream bis;
+		FileOutputStream fos;
+		BufferedOutputStream bos;
+
+		File output = new File(outputFilePath);
+		is = socket.getInputStream();
+		bis = new BufferedInputStream(is);
+		fos = new FileOutputStream(output);
+		bos = new BufferedOutputStream(fos);
+		byte[] buffer = new byte[1024];
+		int data;
 		while (true) {
 			data = bis.read(buffer);
 			if (data != -1) {

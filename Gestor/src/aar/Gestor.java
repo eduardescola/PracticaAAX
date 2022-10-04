@@ -10,7 +10,8 @@ private int puerto = 0;
         this.puerto = puerto; 
     }
     
-    public void run() {
+    @SuppressWarnings("resource")
+	public void run() {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(puerto);

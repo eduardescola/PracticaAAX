@@ -12,11 +12,11 @@ public class UsaCliente {
 				"Que t'agradaria fer?\n 1 monitoritzar els sensors\n 2 Descarregar un informe\n 3 Pujar un informe");
 
 		opcio = teclat.nextInt();
-		teclat.close();
 		switch (opcio) {
 		case 1:
 			ClienteUDP objetoClienteUDP = new ClienteUDP("localhost", 3000);
 			objetoClienteUDP.run();
+			teclat.close();
 			break;
 		case 2:
 			ClienteTCP objetoClienteTCP = new ClienteTCP("localhost", 7000);
