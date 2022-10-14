@@ -33,29 +33,35 @@ public class GestorThread extends Thread {
 			System.err.println("Create streams failed.");
 			System.exit(1);
 		}
-
-		String inputLine;
+	
 		String contrasenya = "elpepe";
 
 		// validar contraseña en el else
 		try {
-			if ((inputLine = in.readLine()).equals(clientDescarga)) {
-				String ruta = getFile(inputLine);
-				sendFile(ruta, socket);
-			} else {
+			String inputLine = in.readLine();
+			if (inputLine.equals(clientDescarga)) {
 				inputLine = in.readLine();
 				while (!inputLine.equals(contrasenya)) {
 					out.println("0");
 					inputLine = in.readLine();
 				}
 				out.println("1");
-				String fromServer;
-		        String fromUser;
-		       
+				inputLine = in.readLine();
+				
+				String ruta = getFile(inputLine);
+				while (ruta==null) {
+					out.println("0");
+					inputLine = in.readLine();
+					ruta = getFile(inputLine);
+				}
+				out.println(ruta);
+				sendFile(ruta, socket);
+				System.out.println("Fitxer enviat");
+			} else {
 		        try {
-		            while ((fromServer = in.readLine()) != null) {
-		                receiveFile(System.getProperty("user.dir")+"/reports", socket);
-		        	}
+		        	String nomFitxer=in.readLine();
+	                receiveFile(System.getProperty("user.dir")+"\\reports\\"+nomFitxer, socket);
+	                System.out.println("Fitxer rebut");
 		        } catch (IOException e) {
 		            System.err.println(e.getCause());
 		            System.exit(1);
@@ -79,12 +85,12 @@ public class GestorThread extends Thread {
 	}
 
 	private String getFile(String fileName) {
-		String PATH = System.getProperty("user.dir") + "/reports";
+		String PATH = System.getProperty("user.dir") + "\\reports";
 		File raiz = new File(PATH);
 		String[] fileList = raiz.list();
 		for (String str : fileList) {
 			if (fileName.equals(str)) {
-				return PATH + "/" + str;
+				return PATH + "//" + str;
 			}
 		}
 		return null;
