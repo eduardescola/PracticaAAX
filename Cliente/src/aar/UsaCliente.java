@@ -10,7 +10,7 @@ public class UsaCliente {
 
 		while (opcio != 1 || opcio != 2 || opcio != 3) {
 			System.out.println(
-					"\nQue t'agradaria fer?\n\n-1 monitoritzar els sensors\n"
+					"Que t'agradaria fer?\n\n-1 monitoritzar els sensors\n"
 					+ "-2 Descarregar un informe\n-3 Pujar un informe");
 
 			opcio = Integer.parseInt(teclat.nextLine());
