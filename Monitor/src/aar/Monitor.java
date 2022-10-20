@@ -118,6 +118,7 @@ public class Monitor {
 	
 	private String tratarDatos(DatagramPacket packet, byte[] buf) {
 		String received = new String(packet.getData(), 0, packet.getLength());
+		
 		String[] partes = received.split(" ");
 		String valor = partes[0];
 		String unidad = partes[1];

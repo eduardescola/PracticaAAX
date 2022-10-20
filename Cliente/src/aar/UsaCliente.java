@@ -8,10 +8,10 @@ public class UsaCliente {
 		int opcio = 0;
 		Scanner teclat = new Scanner(System.in);
 
-		while (opcio != 1 || opcio != 2 || opcio != 3) {
+		while (opcio != 4) {
 			System.out.println(
-					"Que t'agradaria fer?\n\n-1 monitoritzar els sensors\n"
-					+ "-2 Descarregar un informe\n-3 Pujar un informe");
+					"\nQue t'agradaria fer?\n\n-1 monitoritzar els sensors\n"
+					+ "-2 Descarregar un informe\n-3 Pujar un informe\n-4 Sortir");
 
 			opcio = Integer.parseInt(teclat.nextLine());
 
@@ -29,7 +29,9 @@ public class UsaCliente {
 				objetoClienteTCP2.runUpload(teclat);
 				break;
 			default:
-				System.out.println("\nTria l'opcio 1, 2 o 3");
+				if (opcio != 4) 
+					System.out.println("\n\n\n\n\n\nTria l'opcio 1, 2, 3 o 4\n");
+				
 			}
 		}
 		teclat.close();

@@ -5,7 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
+import java.util.Scanner;
 
 public class ClienteUDP {
 	private String IP = "";
@@ -32,11 +32,9 @@ public class ClienteUDP {
 			String received = new String(packetMonitor.getData(), 0, packetMonitor.getLength());
 			String response=i+". Dato Sensor: " + received;
 			System.out.println(response);
+			//Esta i se utliza para que se vaya printando el numero de datos que lleva recibidos
 			i++;
-			if(i==11)
-				break;
 		}
-		socket.close();
 	}
 	
 	private DatagramSocket crearSocket(int puerto) {
